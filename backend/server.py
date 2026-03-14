@@ -70,3 +70,19 @@ def root():
         "health": "/health",
         "api": "/api/v1",
     }
+
+
+# ============================================================
+# Runnable entry point
+# ============================================================
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        "backend.server:app",
+        host=os.getenv("AETHER_HOST", "0.0.0.0"),
+        port=int(os.getenv("AETHER_PORT", "8000")),
+        reload=os.getenv("AETHER_DEBUG", "false").lower() == "true",
+        log_level="info",
+    )
