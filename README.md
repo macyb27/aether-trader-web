@@ -1,6 +1,6 @@
-# Aether Trader Pro - Web Platform
+# Aether Trader Pro - AI Quantitative Trading Platform
 
-**AI-Powered Trading Platform with Paper Trading, Multi-Agent System, and Real-Time Market Analysis**
+**Aether Trader Pro** is a fully modular, scalable AI-powered quantitative trading research platform. It combines classical quantitative finance methods with modern machine learning and reinforcement learning to discover, optimize, and execute trading strategies.
 
 🚀 **Live Demo**: Coming soon on Vercel  
 📱 **Mobile App**: [Aether-Trader-Mobile](https://github.com/macyb27/Aether-Trader-Mobile)  
@@ -8,87 +8,71 @@
 
 ---
 
-## 🎯 Features
+## 🎯 Core Features
 
-### 🏠 Landing Page
-- Modern dark mode design with petrol accent colors
-- Feature showcase with AI, ML, and trading capabilities
-- Call-to-action buttons for signup and dashboard access
-- Responsive design for mobile and desktop
+### 🧠 AI & Quantitative Research
+- **Feature Engineering**: Advanced technical (RSI, MACD, Bollinger Bands) and statistical (Volatility, Skewness, Hurst exponent) indicators.
+- **Alpha Research Lab**: Signal generation and multi-factor model analysis.
+- **Strategy Generator**: Automated generation of Momentum, Mean Reversion, Breakout, and ML-based strategies.
+- **Genetic Optimization**: Evolutionary algorithms with tournament selection, crossover, and mutation for parameter tuning.
+- **Reinforcement Learning**: Gymnasium-compatible trading environments trained with stable-baselines3 (PPO, SAC, TD3, A2C, DQN).
 
-### 🔐 Authentication
-- Secure user registration and login
-- JWT-based authentication
-- Demo credentials for testing: `demo@aether.com` / `demo123`
-- Protected dashboard routes
+### 📈 Trading & Execution
+- **Backtesting Engine**: High-performance vectorbt-based backtesting with walk-forward analysis and Monte Carlo simulations.
+- **Risk Engine**: Comprehensive risk management including VaR, CVaR, drawdown monitoring, and circuit breakers.
+- **Portfolio Optimizer**: Advanced allocation methods (Mean-Variance, Risk Parity, Hierarchical Risk Parity, Black-Litterman).
+- **Execution Engine**: Simulated paper trading broker with order lifecycle management.
 
-### 📊 Paper Trading Dashboard
-- **Portfolio Overview**: Balance, invested capital, profit/loss tracking
-- **Real-Time Stats**: 4 key metrics (Balance, Invested, Profit, Trades)
-- **Quick Actions**: Links to trading, agents, and backtesting
-- **Recent Activity**: Transaction history and trading events
-
-### 🤖 Multi-Agent System Dashboard
-- **4 AI Agents**:
-  - 🛡️ **QA Bot**: Risk management and code review
-  - 🧠 **RL Developer**: Strategy optimization with reinforcement learning
-  - 📊 **Market Intel**: Sentiment analysis and market insights
-  - ⚡ **Orchestrator**: Workflow management and coordination
-  
-- **Agent Status Monitoring**: Real-time performance metrics
-- **Trading Workflow Pipeline**: 5-phase process visualization
-  - Hypothesis → Backtest → Paper Trading → Validation → Live
-- **Agent Collaboration Diagram**: Shows inter-agent communication
-
-### 🔄 Trading Workflow
-1. **Hypothesis**: AI generates trading hypothesis
-2. **Backtest**: Validate on 2+ years historical data
-3. **Paper Trading**: Test with €10,000 virtual capital
-4. **Validation**: Monitor performance metrics (Sharpe ≥1.5)
-5. **Live Trading**: Deploy with real capital (after 50+ trades, 14 days minimum)
+### 💻 Web Dashboard (Next.js)
+- **Portfolio Overview**: Real-time balance, invested capital, and profit/loss tracking.
+- **Multi-Agent System**: Monitor 4 specialized AI agents (QA Bot, RL Developer, Market Intel, Orchestrator).
+- **Trading Workflow Pipeline**: Visualizes the 5-phase process (Hypothesis → Backtest → Paper Trading → Validation → Live).
 
 ---
 
-## 🛠️ Tech Stack
+## 🏗️ Architecture & Tech Stack
 
+The system is built with a modern, scalable microservices architecture.
+
+### Backend Stack (Python)
+| Component | Technology |
+|-----------|-----------|
+| **Framework** | FastAPI, Uvicorn |
+| **Data & Analysis** | Pandas, NumPy, SciPy |
+| **Trading & Backtesting** | vectorbt, CCXT, yfinance |
+| **AI / ML** | stable-baselines3, Gymnasium, PyTorch |
+| **Database & Cache** | PostgreSQL (SQLAlchemy/asyncpg), SQLite (Dev), Redis |
+
+### Frontend Stack (TypeScript)
 | Component | Technology |
 |-----------|-----------|
 | **Framework** | Next.js 14 (React 18) |
-| **Language** | TypeScript |
 | **Styling** | Tailwind CSS 3 |
-| **UI Components** | Lucide Icons, Recharts |
-| **Authentication** | JWT + NextAuth.js |
-| **State Management** | React Hooks + Zustand |
-| **API** | Next.js API Routes |
-| **Deployment** | Vercel |
+| **State Management** | Zustand, React Hooks |
+| **Authentication** | NextAuth.js (JWT) |
+
+### Infrastructure
+| Component | Technology |
+|-----------|-----------|
+| **Orchestration** | Docker Compose, Kubernetes (HPA, Ingress) |
+| **Scheduling** | Apache Airflow (DAGs for trading & training) |
+| **Monitoring** | Prometheus, Grafana |
 
 ---
 
-## 📋 Project Structure
+## 🔄 The Trading Pipeline
 
-```
-aether-trader-web/
-├── app/
-│   ├── layout.tsx              # Root layout
-│   ├── page.tsx                # Landing page
-│   ├── globals.css             # Global styles
-│   ├── api/
-│   │   └── auth/
-│   │       ├── login/route.ts  # Login endpoint
-│   │       └── signup/route.ts # Signup endpoint
-│   ├── auth/
-│   │   ├── login/page.tsx      # Login page
-│   │   └── signup/page.tsx     # Signup page
-│   └── dashboard/
-│       ├── page.tsx            # Dashboard home
-│       └── agents/page.tsx     # Multi-agent dashboard
-├── public/                     # Static assets
-├── package.json
-├── tsconfig.json
-├── tailwind.config.ts
-├── next.config.js
-├── vercel.json                 # Vercel deployment config
-└── README.md
+The core automated trading loop runs continuously via Airflow scheduling:
+
+```python
+while True:
+    data = load_market_data()                   # 1. Ingest OHLCV data (CCXT/yfinance)
+    features = build_features(data)             # 2. Compute momentum, volatility, RSI, etc.
+    strategies = generate_strategies(features)  # 3. Generate random & template strategies
+    results = backtest_strategies(strategies)   # 4. Simulate trades & calculate Sharpe/Drawdown
+    best = select_best(results)                 # 5. Score via Genetic Optimization
+    portfolio = optimize_portfolio(best)        # 6. Apply Risk Parity / Mean Variance
+    execute_paper_trades(portfolio)             # 7. Execute via simulated broker
 ```
 
 ---
@@ -96,221 +80,65 @@ aether-trader-web/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- Git
+- Python 3.11+
+- Node.js 18+
+- Docker & Docker Compose (optional, for full stack)
 
-### Installation
+### Quick Start (Local Development)
 
-```bash
-# Clone repository
-git clone https://github.com/macyb27/aether-trader-web.git
-cd aether-trader-web
-
-# Install dependencies
-npm install --legacy-peer-deps
-
-# Create .env.local
-cp .env.example .env.local
-
-# Start development server
-npm run dev
-```
-
-The app will be available at `http://localhost:3000`
-
-### Demo Credentials
-```
-Email: demo@aether.com
-Password: demo123
-```
-
----
-
-## 🏗️ Building for Production
-
-```bash
-# Build optimized production bundle
-npm run build
-
-# Start production server
-npm run start
-
-# Run linting
-npm run lint
-```
-
----
-
-## 🌐 Deployment to Vercel
-
-### Option 1: Automatic Deployment (Recommended)
-
-1. **Push to GitHub**:
+1. **Clone the repository**
    ```bash
-   git push origin master
+   git clone https://github.com/macyb27/aether-trader-web.git
+   cd aether-trader-web
    ```
 
-2. **Connect to Vercel**:
-   - Go to [vercel.com](https://vercel.com)
-   - Click "New Project"
-   - Import from GitHub: `aether-trader-web`
-   - Configure environment variables (see `.env.example`)
-   - Click "Deploy"
+2. **Environment Setup**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys (Alpaca, Finnhub, etc.)
+   ```
 
-### Option 2: Manual Deployment
+3. **Start with Docker (Recommended)**
+   ```bash
+   make docker-up
+   ```
+   This starts the Backend (FastAPI), Frontend (Next.js), PostgreSQL, Redis, Prometheus, and Grafana.
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
+4. **Manual Start (Without Docker)**
+   ```bash
+   # Install dependencies
+   make install
 
-# Deploy
-vercel
-```
+   # Start both servers
+   make dev
+   ```
 
-### Environment Variables (Vercel Settings)
-
-Set these in Vercel project settings:
-
-```
-NEXT_PUBLIC_API_URL=https://your-domain.vercel.app
-JWT_SECRET=your-secret-key-change-this
-NEXT_PUBLIC_ALPACA_API_KEY=your-alpaca-key
-ALPACA_SECRET_KEY=your-alpaca-secret
-NEXT_PUBLIC_FINNHUB_API_KEY=your-finnhub-key
-```
-
----
-
-## 📱 Integration with Mobile App
-
-The web platform shares the same backend API structure as the mobile app:
-
-- **Mobile**: [Aether-Trader-Mobile](https://github.com/macyb27/Aether-Trader-Mobile)
-- **Web**: This repository
-- **Shared APIs**: Alpaca, Finnhub, Backtesting Engine
-
-Both platforms use:
-- Same authentication system
-- Same portfolio data structure
-- Same multi-agent system
-- Same trading workflow
-
----
-
-## 🔗 API Endpoints
-
-### Authentication
-- `POST /api/auth/login` - User login
-- `POST /api/auth/signup` - User registration
-
-### Trading (Coming Soon)
-- `GET /api/trading/portfolio` - Get portfolio data
-- `POST /api/trading/execute` - Execute trade
-- `GET /api/trading/history` - Get trade history
-
-### Agents (Coming Soon)
-- `GET /api/agents/status` - Get agent statuses
-- `GET /api/agents/performance` - Get performance metrics
-
----
-
-## 🎨 Design System
-
-### Color Palette
-- **Primary Petrol**: `#0a7ea4`
-- **Dark Background**: `#0f172a`
-- **Surface**: `#1e293b`
-- **Text**: `#e2e8f0`
-- **Accent**: Cyan to Blue gradient
-
-### Components
-- **Buttons**: Primary (gradient), Secondary (dark)
-- **Cards**: Elevated with hover effects
-- **Inputs**: Dark themed with cyan focus states
-- **Badges**: Color-coded status indicators
-
----
-
-## 📊 Performance Metrics
-
-- **Lighthouse Score**: 90+
-- **Page Load**: < 2s
-- **API Response**: < 500ms
-- **Mobile Friendly**: ✅ Responsive design
-
----
-
-## 🔒 Security
-
-- JWT authentication with 7-day expiration
-- Environment variables for sensitive data
-- HTTPS only in production
-- CORS configured for API routes
-- Input validation on all endpoints
-
----
-
-## 🧪 Testing
-
-```bash
-# Run tests (when implemented)
-npm run test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Generate coverage report
-npm run test:coverage
-```
+### Access Points
+- **Frontend Dashboard**: `http://localhost:3000`
+- **Backend API Docs**: `http://localhost:8000/docs`
+- **Grafana Metrics**: `http://localhost:3001`
 
 ---
 
 ## 📚 Documentation
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Tailwind CSS](https://tailwindcss.com)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs)
-- [Vercel Deployment Guide](https://vercel.com/docs)
+For detailed technical documentation, please refer to:
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - Detailed module breakdown and system design.
+- [Makefile](./Makefile) - Available development commands.
 
 ---
 
-## 🐛 Troubleshooting
+## 🧪 Testing
 
-### Build Errors
+The backend includes a comprehensive test suite covering all core modules.
+
 ```bash
-# Clear cache and reinstall
-npm install --legacy-peer-deps
-npm run build
+# Run all tests with coverage report
+make test
+
+# Run tests quickly
+make test-fast
 ```
-
-### Port Already in Use
-```bash
-# Use different port
-npm run dev -- -p 3001
-```
-
-### Environment Variables Not Loading
-```bash
-# Restart dev server after updating .env.local
-npm run dev
-```
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-MIT License - see LICENSE file for details
 
 ---
 
@@ -318,17 +146,9 @@ MIT License - see LICENSE file for details
 
 **Cheffe** - AI Engineer  
 - GitHub: [@macyb27](https://github.com/macyb27)
-- Repository: [aether-trader-web](https://github.com/macyb27/aether-trader-web)
 
 ---
 
-## 🙏 Acknowledgments
+## 📄 License
 
-- Inspired by autonomous trading systems and multi-agent AI
-- Built with modern web technologies
-- Designed for both desktop and mobile experiences
-
----
-
-**Last Updated**: March 8, 2026  
-**Status**: 🚀 Production Ready for Deployment
+MIT License - see LICENSE file for details.
