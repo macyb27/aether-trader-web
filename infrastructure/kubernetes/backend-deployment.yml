@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aether-backend
+  namespace: aether-trader
+  labels:
+    app: aether-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aether-backend
+  template:
+    metadata:
+      labels:
+        app: aether-backend
+    spec:
+      containers:
+        - name: backend
+          image: aether-trader/backend:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: AETHER_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: aether-secrets
+                  key: database-url
+            - name: AETHER_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: aether-secrets
+                  key: redis-url
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - name: model-storage
+              mountPath: /app/models
+      volumes:
+        - name: model-storage
+          persistentVolumeClaim:
+            claimName: aether-models-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aether-backend-svc
+  namespace: aether-trader
+spec:
+  selector:
+    app: aether-backend
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: aether-backend-hpa
+  namespace: aether-trader
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: aether-backend
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80

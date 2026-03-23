@@ -1,0 +1,121 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "aether-trading",
+    "title": "Aether Trader - Trading Dashboard",
+    "tags": ["aether", "trading", "quantitative"],
+    "timezone": "browser",
+    "refresh": "10s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Portfolio Value",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "aether_portfolio_value",
+            "legendFormat": "Portfolio Value"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "PnL %",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+        "targets": [
+          {
+            "expr": "aether_portfolio_pnl_pct",
+            "legendFormat": "PnL %"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Risk Score",
+        "type": "gauge",
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "aether_risk_score",
+            "legendFormat": "Risk Score"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 40},
+                {"color": "red", "value": 70}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Pipeline Iterations",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+        "targets": [
+          {
+            "expr": "aether_pipeline_iteration",
+            "legendFormat": "Iterations"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Portfolio Value Over Time",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+        "targets": [
+          {
+            "expr": "aether_portfolio_value",
+            "legendFormat": "Portfolio Value"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Pipeline Iteration Duration",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+        "targets": [
+          {
+            "expr": "aether_pipeline_iteration_seconds",
+            "legendFormat": "Duration (s)"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Risk Violations",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+        "targets": [
+          {
+            "expr": "rate(aether_risk_violations[5m])",
+            "legendFormat": "Violations/min"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Drawdown",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
+        "targets": [
+          {
+            "expr": "aether_risk_drawdown",
+            "legendFormat": "Current Drawdown"
+          }
+        ]
+      }
+    ]
+  }
+}

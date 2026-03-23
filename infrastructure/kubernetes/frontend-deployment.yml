@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aether-frontend
+  namespace: aether-trader
+  labels:
+    app: aether-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aether-frontend
+  template:
+    metadata:
+      labels:
+        app: aether-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: aether-trader/frontend:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_API_URL
+              value: "http://aether-backend-svc:8000/api/v1"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aether-frontend-svc
+  namespace: aether-trader
+spec:
+  selector:
+    app: aether-frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aether-ingress
+  namespace: aether-trader
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - aether-trader.example.com
+      secretName: aether-tls
+  rules:
+    - host: aether-trader.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: aether-frontend-svc
+                port:
+                  number: 3000
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: aether-backend-svc
+                port:
+                  number: 8000
+          - path: /health
+            pathType: Exact
+            backend:
+              service:
+                name: aether-backend-svc
+                port:
+                  number: 8000

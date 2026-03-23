@@ -39,3 +39,40 @@ yarn-error.log*
 # Misc
 .cache/
 dist/
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+.eggs/
+
+# ML Models and data
+models/
+*.h5
+*.pkl
+*.joblib
+*.pt
+*.pth
+
+# Database
+*.db
+*.sqlite3
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Docker override
+docker-compose.override.yml
